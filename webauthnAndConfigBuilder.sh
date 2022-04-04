@@ -3,7 +3,10 @@ cp -R /webauthn/opt /output/webauthn/
 /scriptrun/configBuilder.sh
 
 # Update tomcat config
-cp -R tomcat/* /output/config/tomcat/
+cp -R /tmp/nief/server.xml /output/config/tomcat/
+
+# Add GFIPM CA for Tested Metadata
+cp -R /tmp/nief/gfipm-ca.pem /output/credentials/shib-idp/
 
 echo "ADD webauthn/opt/shibboleth-idp/edit-webapp /opt/shibboleth-idp/edit-webapp" >> /output/Dockerfile
 echo "ADD webauthn/opt/shibboleth-idp/flows /opt/shibboleth-idp/flows" >> /output/Dockerfile
