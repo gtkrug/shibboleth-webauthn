@@ -2,6 +2,9 @@ mkdir /output/webauthn
 cp -R /webauthn/opt /output/webauthn/
 /scriptrun/configBuilder.sh
 
+# Update tomcat config
+cp -R tomcat/* /output/config/tomcat/
+
 echo "ADD webauthn/opt/shibboleth-idp/edit-webapp /opt/shibboleth-idp/edit-webapp" >> /output/Dockerfile
 echo "ADD webauthn/opt/shibboleth-idp/flows /opt/shibboleth-idp/flows" >> /output/Dockerfile
 echo "ADD webauthn/opt/shibboleth-idp/conf /opt/shibboleth-idp/conf" >> /output/Dockerfile

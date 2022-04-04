@@ -58,7 +58,12 @@
                         
             <div class="form-element-wrapper">
               <label for="username">#springMessageText("idp.login.username", "Username")</label>
-              <input class="form-element form-field" id="username" name="j_username" type="text" />
+              <input class="form-element form-field" id="username" name="j_username" type="text">
+               #set ($cookieUsername = readCookie(username))
+               #if ($cookieUsername)
+                  encoder.encodeForHTML($cookieUsername)
+               #end
+               </input>
             </div>
 
             <div class="form-element-wrapper">
@@ -114,6 +119,7 @@
           e.preventDefault();
           if ($('#username').val().length > 0) {
             $('#use-webauthn').html('#springMessageText("idp.login.pleasewait", "Logging in, please wait...")');
+            createCookie("username", $("#username").val(), 30000000);
             return authenticate(username = $("#username").val());
           }
         });

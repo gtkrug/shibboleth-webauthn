@@ -11,9 +11,9 @@ Update LDAP certificate in opt/shibboleth-idp/credentials/ldap-server.crt.
 
 Build the configuration:
 
-docker build -t my/shibbidp_configbuilder_with_webauthn_container .  
+docker build -t my/shib-builder .  
 OUTPUTDIR=some-output-directory  
-docker run -it -v $OUTPUTDIR:/output -e "BUILD_ENV=LINUX" my/shibbidp_configbuilder_with_webauthn_container  
+docker run -it -v $OUTPUTDIR:/output -e "BUILD_ENV=LINUX" my/shib-builder
 
 Build and run the actual IdP:
 
