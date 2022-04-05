@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+                           
+       default-init-method="initialize"
+       default-destroy-method="destroy">
+
+    <bean parent="shibboleth.TranscodingRuleLoader">
+    <constructor-arg>
+    <list>
+
+      <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefEmail</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:EmailAddressText</prop>
+                 <prop key="displayName.en">Email Address Text</prop>
+                 <prop key="description.en">Email Address Text</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefEmployer</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:EmployerName</prop>
+                 <prop key="displayName.en">Employer Name</prop>
+                 <prop key="description.en">Employer Name</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefFedId</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:FederationId</prop>
+                 <prop key="displayName.en">Federation Id</prop>
+                 <prop key="description.en">Federation Id</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefGivenName</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:GivenName</prop>
+                 <prop key="displayName.en">Given Name</prop>
+                 <prop key="description.en">Given Name</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefIdentityProviderId</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:IdentityProviderId</prop>
+                 <prop key="displayName.en">Identity Provider Id</prop>
+                 <prop key="description.en">Identity Provider Id</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefSurName</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:SurName</prop>
+                 <prop key="displayName.en">Sur Name</prop>
+                 <prop key="description.en">Sur Name</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefTelephoneNumber</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:TelephoneNumber</prop>
+                 <prop key="displayName.en">Telephone Number</prop>
+                 <prop key="description.en">Telephone Number</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefIdentityProviderId</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">nief:1.0:user:IdentityProviderId</prop>
+                 <prop key="displayName.en">Identity Provider Id</prop>
+                 <prop key="description.en">Identity Provider Id</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefUniqueSubjectId</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">nief:1.0:user:UniqueSubjectId</prop>
+                 <prop key="displayName.en">Unique Subject Id</prop>
+                 <prop key="description.en">Unique Subject Id</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">nief28CFR</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:28CFRCertificationIndicator</prop>
+                 <prop key="displayName.en">28 CFR Certification Indicator</prop>
+                 <prop key="description.en">28 CFR Certification Indicator</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefElectronicAuthenticationAssuranceLevelCode</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:user:2.2.0:ElectronicAuthenticationAssuranceLevelCode</prop>
+                 <prop key="displayName.en">Electronic Authentication Assurance Level Code</prop>
+                 <prop key="description.en">Electronic Authentication Assurance Level Code</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefORI</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:EmployerORI</prop>
+                 <prop key="displayName.en">Employer ORI</prop>
+                 <prop key="description.en">Employer ORI</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefEmployerOrganizationGeneralCategoryCode</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:EmployerOrganizationGeneralCategoryCode</prop>
+                 <prop key="displayName.en">Employer Organization General Category Code</prop>
+                 <prop key="description.en">Employer Organization General Category Code</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefEmployerStateCode</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:EmployerStateCode</prop>
+                 <prop key="displayName.en">Employer State Code</prop>
+                 <prop key="description.en">Employer State Code</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefIdentityProofingAssuranceLevelCode</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:IdentityProofingAssuranceLevelCode</prop>
+                 <prop key="displayName.en">Identity Proofing Assurance Level Code</prop>
+                 <prop key="description.en">Identity Proofing Assurance Level Code</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefPSO</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:PublicSafetyOfficerIndicator</prop>
+                 <prop key="displayName.en">Public Safety Officer Indicator</prop>
+                 <prop key="description.en">Public Safety Officer Indicator</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefSLEO</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:SwornLawEnforcementOfficerIndicator</prop>
+                 <prop key="displayName.en">Sworn Law Enforcement Officer Indicator</prop>
+                 <prop key="description.en">Sworn Law Enforcement Officer Indicator</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefAAL</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">nief:1.0:user:AuthenticatorAssuranceLevel</prop>
+                 <prop key="displayName.en">Authenticator Assurance Level</prop>
+                 <prop key="description.en">Authenticator Assurance Level</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefFAL</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">nief:1.0:user:FederationAssuranceLevel</prop>
+                 <prop key="displayName.en">Federation Assurance Level</prop>
+                 <prop key="description.en">Federation Assurance Level</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefIAL</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">nief:1.0:user:IdentityAssuranceLevel</prop>
+                 <prop key="displayName.en">Identity Assurance Level</prop>
+                 <prop key="description.en">Identity Assurance Level</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefIntelligenceAnalystIndicator</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">nief:1.0:user:IntelligenceAnalystIndicator</prop>
+                 <prop key="displayName.en">Intelligence Analyst Indicator</prop>
+                 <prop key="description.en">Intelligence Analyst Indicator</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefCounterTerrorismDataSelfSearchHomePrivilegeIndicator</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:CounterTerrorismDataSelfSearchHomePrivilegeIndicator</prop>
+                 <prop key="displayName.en">Counter Terrorism Data Self Search Home Privilege Indicator</prop>
+                 <prop key="description.en">Counter Terrorism Data Self Search Home Privilege Indicator</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefCriminalHistoryDataSelfSearchHomePrivilegeIndicator</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:CriminalHistoryDataSelfSearchHomePrivilegeIndicator</prop>
+                 <prop key="displayName.en">Criminal History Data Self Search Home Privilege Indicator</prop>
+                 <prop key="description.en">Criminal History Data Self Search Home Privilege Indicator</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefCriminalIntelligenceDataSelfSearchHomePrivilegeIndicator</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:CriminalIntelligenceDataSelfSearchHomePrivilegeIndicator</prop>
+                 <prop key="displayName.en">Criminal Intelligence Data Self Search Home Privilege Indicator</prop>
+                 <prop key="description.en">Criminal Intelligence Data Self Search Home Privilege Indicator</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefCriminalInvestigativeDataSelfSearchHomePrivilegeIndicator</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:CriminalInvestigativeDataSelfSearchHomePrivilegeIndicator</prop>
+                 <prop key="displayName.en">Criminal Investigative Data Self Search Home Privilege Indicator</prop>
+                 <prop key="description.en">Criminal Investigative Data Self Search Home Privilege Indicator</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefDisplayName</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:DisplayName</prop>
+                 <prop key="displayName.en">Display Name</prop>
+                 <prop key="description.en">Display Name</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefGovernmentDataSelfSearchHomePrivilegeIndicator</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:GovernmentDataSelfSearchHomePrivilegeIndicator</prop>
+                 <prop key="displayName.en">Government Data Self Search Home Privilege Indicator</prop>
+                 <prop key="description.en">Government Data Self Search Home Privilege Indicator</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefLocalId</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:LocalId</prop>
+                 <prop key="displayName.en">Local Id</prop>
+                 <prop key="description.en">Local Id</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefNCICCertificationIndicator</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:NCICCertificationIndicator</prop>
+                 <prop key="displayName.en">NCIC Certification Indicator</prop>
+                 <prop key="description.en">NCIC Certification Indicator</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefNDExPrivilegeIndicator</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:NDExPrivilegeIndicator</prop>
+                 <prop key="displayName.en">NDEx Privilege Indicator</prop>
+                 <prop key="description.en">NDEx Privilege Indicator</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefPCIICertificationIndicator</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">gfipm:2.0:user:PCIICertificationIndicator</prop>
+                 <prop key="displayName.en">PCII Certification Indicator</prop>
+                 <prop key="description.en">PCII Certification Indicator</prop>
+             </props>
+         </property>
+     </bean>
+     <bean parent="shibboleth.TranscodingProperties">
+         <property name="properties">
+             <props merge="true">
+                 <prop key="id">niefFICAMAssuranceLevelCode</prop>
+                 <prop key="transcoder">SAML2StringTranscoder</prop>
+                 <prop key="saml2.name">nief:1.0:user:FICAMAssuranceLevelCode</prop>
+                 <prop key="displayName.en">FICAM Assurance Level Code</prop>
+                 <prop key="description.en">FICAM Assurance Level Code</prop>
+             </props>
+         </property>
+     </bean>
+
+    </list>
+    </constructor-arg>
+    </bean>
+    
+</beans>
