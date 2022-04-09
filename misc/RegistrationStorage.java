@@ -28,8 +28,9 @@ import com.yubico.webauthn.data.PublicKeyCredentialType;
 import com.yubico.webauthn.data.UserIdentity;
 import com.yubico.webauthn.data.exception.Base64UrlException;
 
-import edu.duke.oit.idms.idp.authn.dbconn.DatabaseConnectionFactory;
+//import edu.duke.oit.idms.idp.authn.dbconn.DatabaseConnectionFactory;
 
+import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -79,23 +80,29 @@ public class RegistrationStorage implements CredentialRepository {
           
           Set<String> actualUsers = new HashSet<String>();
           try {
-            conn = DatabaseConnectionFactory.getShibbolethDatabaseConnection();
-            String sql = "select netid from webauthn_users";
+            Class.forName("com.mysql.jdbc.Driver");
+          } 
+          catch (ClassNotFoundException e) {
+            e.printStackTrace();
+          } 
+          try {
+            conn = DriverManager.getConnection ("jdbc:mysql://shib-db:3306/idp1_db", "db_user", "db_pw_11");
+            String sql = "select NETID from WEBAUTHN_USERS";
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             
             while (rs.next()) {
-              String netid = rs.getString("netid");
-              actualUsers.add(netid);
+              String NETID = rs.getString("NETID");
+              actualUsers.add(NETID);
               
-              if (!registeredUsers.contains(netid)) {
-                registeredUsers.add(netid);
+              if (!registeredUsers.contains(NETID)) {
+                registeredUsers.add(NETID);
               }
             }
             
-            for (String netid : new HashSet<String>(registeredUsers)) {
-              if (!actualUsers.contains(netid)) {
-                registeredUsers.remove(netid);
+            for (String NETID : new HashSet<String>(registeredUsers)) {
+              if (!actualUsers.contains(NETID)) {
+                registeredUsers.remove(NETID);
               }
             }
             
@@ -149,12 +156,12 @@ public class RegistrationStorage implements CredentialRepository {
    * @param registration 
    * @param userIdentity 
    * @param authenticatorAttestationResponse 
-   * @param nickname 
+   * @param NICKNAME 
    * @param registrationResponse 
    */
-  public void addRegistration(String username, RegistrationResult registration, UserIdentity userIdentity, AuthenticatorAttestationResponse authenticatorAttestationResponse, String nickname, String registrationResponse) {
+  public void addRegistration(String username, RegistrationResult registration, UserIdentity userIdentity, AuthenticatorAttestationResponse authenticatorAttestationResponse, String NICKNAME, String registrationResponse) {
     long signatureCounter = authenticatorAttestationResponse.getAttestation().getAuthenticatorData().getSignatureCounter();
-    logger.info("Called addRegistration, username=" + username + ", registration=" + registration + ", userIdentity=" + userIdentity + ", signatureCounter=" + signatureCounter + ", nickname=" + nickname);
+    logger.info("Called addRegistration, username=" + username + ", registration=" + registration + ", userIdentity=" + userIdentity + ", signatureCounter=" + signatureCounter + ", NICKNAME=" + NICKNAME);
     
     if (!userIdentity.getName().equals(username)) {
       throw new RuntimeException("Username mismatch, userIdentity.getName()=" + userIdentity.getName() + ", username=" + username);
@@ -176,10 +183,12 @@ public class RegistrationStorage implements CredentialRepository {
     PreparedStatement ps2 = null;
 
     try {
-      conn = DatabaseConnectionFactory.getShibbolethDatabaseConnection();
+//      conn = DatabaseConnectionFactory.getShibbolethDatabaseConnection();
+      conn = DriverManager.getConnection ("jdbc:mysql://shib-db:3306/idp1_db", "db_user", "db_pw_11");
+      conn.setAutoCommit(false);
       if (!userHandle.isPresent()) {
         // need to insert new user
-        String sql = "insert into webauthn_users (netid, user_handle) values (?, ?)";
+        String sql = "insert into WEBAUTHN_USERS (NETID, USER_HANDLE) values (?, ?)";
         ps1 = conn.prepareStatement(sql);
         ps1.setString(1, username.trim());
         ps1.setString(2, userIdentity.getId().getBase64Url());
@@ -192,7 +201,7 @@ public class RegistrationStorage implements CredentialRepository {
         }
       }
       
-      String sql = "insert into webauthn_registrations (user_handle, credential_type, credential_id, public_key_cose, signature_count, attestation_type, attestation_data, registration_time, nickname, registration_response) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      String sql = "insert into WEBAUTHN_REGISTRATIONS (USER_HANDLE, CREDENTIAL_TYPE, CREDENTIAL_ID, PUBLIC_KEY_COSE, SIGNATURE_COUNT, ATTESTATION_TYPE, attestation_data, REGISTRATION_TIME, NICKNAME, registration_response) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
       ps2 = conn.prepareStatement(sql);
       ps2.setString(1, userIdentity.getId().getBase64Url());
       ps2.setString(2, registration.getKeyId().getType().name());
@@ -202,19 +211,19 @@ public class RegistrationStorage implements CredentialRepository {
       ps2.setString(6, registration.getAttestationType().name());
       ps2.setString(7, aaguid);
       ps2.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
-      ps2.setString(9, nickname);
+      ps2.setString(9, NICKNAME);
       ps2.setString(10, registrationResponse);
       ps2.executeUpdate();
       conn.commit();
       
-      logger.info("Added registration, username=" + username + ", registration=" + registration + ", userIdentity=" + userIdentity + ", signatureCounter=" + signatureCounter + ", nickname=" + nickname);
+      logger.info("Added registration, username=" + username + ", registration=" + registration + ", userIdentity=" + userIdentity + ", signatureCounter=" + signatureCounter + ", NICKNAME=" + NICKNAME);
     } catch (Exception e) {
       try {
         conn.rollback();
       } catch (SQLException e1) {
         // ignore
       }
-      logger.info("Error in addRegistration, username=" + username + ", registration=" + registration + ", userIdentity=" + userIdentity + ", signatureCounter=" + signatureCounter + ", nickname=" + nickname);
+      logger.info("Error in addRegistration, username=" + username + ", registration=" + registration + ", userIdentity=" + userIdentity + ", signatureCounter=" + signatureCounter + ", NICKNAME=" + NICKNAME);
       throw new RuntimeException(e);
     } finally {
 
@@ -265,15 +274,15 @@ public class RegistrationStorage implements CredentialRepository {
     Collection<RegistrationData> registrations = new ArrayList<RegistrationData>();
 
     while (rs.next()) {
-      String credentialTypeString = rs.getString("credential_type");
-      String credentialIdBase64 = rs.getString("credential_id");
-      String publicKeyCoseBase64 = rs.getString("public_key_cose");
-      long signatureCount = rs.getLong("signature_count");
-      String attestationTypeString = rs.getString("attestation_type");
-      String netid = rs.getString("netid");
-      String userHandleBase64 = rs.getString("user_handle");
-      Date registrationTime = new Date(rs.getTimestamp("registration_time").getTime());
-      String nickname = rs.getString("nickname");
+      String credentialTypeString = rs.getString("CREDENTIAL_TYPE");
+      String credentialIdBase64 = rs.getString("CREDENTIAL_ID");
+      String publicKeyCoseBase64 = rs.getString("PUBLIC_KEY_COSE");
+      long signatureCount = rs.getLong("SIGNATURE_COUNT");
+      String attestationTypeString = rs.getString("ATTESTATION_TYPE");
+      String NETID = rs.getString("NETID");
+      String userHandleBase64 = rs.getString("USER_HANDLE");
+      Date registrationTime = new Date(rs.getTimestamp("REGISTRATION_TIME").getTime());
+      String NICKNAME = rs.getString("NICKNAME");
       
       AttestationType attestationType = AttestationType.valueOf(attestationTypeString);
       if (attestationType == null) {
@@ -289,8 +298,8 @@ public class RegistrationStorage implements CredentialRepository {
       registration.setAttestationTypeString(attestationTypeString);
       registration.setCredentialIdBase64(credentialIdBase64);
       registration.setCredentialTypeString(credentialTypeString);
-      registration.setNetid(netid);
-      registration.setNickname(nickname);
+      registration.setNetid(NETID);
+      registration.setNickname(NICKNAME);
       registration.setPublicKeyCoseBase64(publicKeyCoseBase64);
       registration.setRegistrationTime(registrationTime);
       registration.setSignatureCount(signatureCount);
@@ -317,9 +326,10 @@ public class RegistrationStorage implements CredentialRepository {
     ResultSet rs = null;
         
     try {
-      conn = DatabaseConnectionFactory.getShibbolethDatabaseConnection();
-      
-      String sql = "select netid, user_handle, credential_type, credential_id, public_key_cose, signature_count, attestation_type, registration_time, nickname from webauthn_registrations_v where netid = ?";
+//      conn = DatabaseConnectionFactory.getShibbolethDatabaseConnection();
+      conn = DriverManager.getConnection ("jdbc:mysql://shib-db:3306/idp1_db", "db_user", "db_pw_11");
+
+      String sql = "select NETID, WEBAUTHN_USERS.USER_HANDLE, CREDENTIAL_TYPE, CREDENTIAL_ID, PUBLIC_KEY_COSE, SIGNATURE_COUNT, ATTESTATION_TYPE, REGISTRATION_TIME, NICKNAME from WEBAUTHN_REGISTRATIONS RIGHT JOIN WEBAUTHN_USERS ON WEBAUTHN_USERS.USER_HANDLE = WEBAUTHN_REGISTRATIONS.USER_HANDLE where NETID = ?";
       ps = conn.prepareStatement(sql);
       ps.setString(1, username);
       rs = ps.executeQuery();
@@ -371,17 +381,18 @@ public class RegistrationStorage implements CredentialRepository {
     }
     
     try {
-      conn = DatabaseConnectionFactory.getShibbolethDatabaseConnection();
+//      conn = DatabaseConnectionFactory.getShibbolethDatabaseConnection();
+      conn = DriverManager.getConnection ("jdbc:mysql://shib-db:3306/idp1_db", "db_user", "db_pw_11");
       String userHandleBase64 = userHandle.getBase64Url();
-      String sql = "select netid from webauthn_users where user_handle = ?";
+      String sql = "select NETID from WEBAUTHN_USERS where USER_HANDLE = ?";
       ps = conn.prepareStatement(sql);
       ps.setString(1, userHandleBase64);
       rs = ps.executeQuery();
       
       if (rs.next()) {
-        String netid = rs.getString("netid");
-        logger.info("Called getUsernameForUserHandle, userHandle=" + userHandle + ", returning NetID=" + netid);
-        return Optional.of(netid);
+        String NETID = rs.getString("NETID");
+        logger.info("Called getUsernameForUserHandle, userHandle=" + userHandle + ", returning NetID=" + NETID);
+        return Optional.of(NETID);
       } else {
         logger.info("Called getUsernameForUserHandle, userHandle=" + userHandle + ", returning no NetID");
         return Optional.empty();
@@ -430,14 +441,15 @@ public class RegistrationStorage implements CredentialRepository {
     }
     
     try {
-      conn = DatabaseConnectionFactory.getShibbolethDatabaseConnection();
-      String sql = "select user_handle from webauthn_users where netid = ?";
+//      conn = DatabaseConnectionFactory.getShibbolethDatabaseConnection();
+      conn = DriverManager.getConnection ("jdbc:mysql://shib-db:3306/idp1_db", "db_user", "db_pw_11");
+      String sql = "select USER_HANDLE from WEBAUTHN_USERS where NETID = ?";
       ps = conn.prepareStatement(sql);
       ps.setString(1, username);
       rs = ps.executeQuery();
       
       if (rs.next()) {
-        String userHandleBase64 = rs.getString("user_handle");
+        String userHandleBase64 = rs.getString("USER_HANDLE");
         ByteArray userHandle = ByteArray.fromBase64Url(userHandleBase64);
         logger.info("Called getUserHandleForUsername, username=" + username + ", returning userHandle=" + userHandle.getBase64Url());
         return Optional.of(userHandle);
@@ -484,14 +496,16 @@ public class RegistrationStorage implements CredentialRepository {
       throw new RuntimeException("No result");
     }
     
-    logger.info("Called updateSignatureCount, result=" + result + ", netid=" + result.getUsername() + ", credentialId=" + result.getCredentialId().getBase64Url());    
+    logger.info("Called updateSignatureCount, result=" + result + ", NETID=" + result.getUsername() + ", credentialId=" + result.getCredentialId().getBase64Url());    
 
     Connection conn = null;
     PreparedStatement ps = null;
 
     try {
-      conn = DatabaseConnectionFactory.getShibbolethDatabaseConnection();
-      String sql = "update webauthn_registrations set signature_count = ? where user_handle = ? and credential_id = ?";
+//      conn = DatabaseConnectionFactory.getShibbolethDatabaseConnection();
+      conn = DriverManager.getConnection ("jdbc:mysql://shib-db:3306/idp1_db", "db_user", "db_pw_11");
+      conn.setAutoCommit(false);
+      String sql = "update WEBAUTHN_REGISTRATIONS set SIGNATURE_COUNT = ? where USER_HANDLE = ? and CREDENTIAL_ID = ?";
       ps = conn.prepareStatement(sql);
       ps.setLong(1, result.getSignatureCount());
       ps.setString(2, result.getUserHandle().getBase64Url());
@@ -499,7 +513,7 @@ public class RegistrationStorage implements CredentialRepository {
       
       int count = ps.executeUpdate();
       if (count != 1) {
-        throw new RuntimeException("No rows updated, credential not registered to user?? result=" + result + ", netid=" + result.getUsername() + ", credentialId=" + result.getCredentialId().getBase64Url());
+        throw new RuntimeException("No rows updated, credential not registered to user?? result=" + result + ", NETID=" + result.getUsername() + ", credentialId=" + result.getCredentialId().getBase64Url());
       }
       
       conn.commit();
@@ -511,7 +525,7 @@ public class RegistrationStorage implements CredentialRepository {
         // ignore
       }
       
-      logger.error("Error in updateSignatureCount, result=" + result + ", netid=" + result.getUsername() + ", credentialId=" + result.getCredentialId().getBase64Url(), e);
+      logger.error("Error in updateSignatureCount, result=" + result + ", NETID=" + result.getUsername() + ", credentialId=" + result.getCredentialId().getBase64Url(), e);
       throw new RuntimeException(e);
     } finally {
 
@@ -532,7 +546,7 @@ public class RegistrationStorage implements CredentialRepository {
       }
     }
 
-    logger.info("Updating signature count to " + result.getSignatureCount() + " for netid=" + result.getUsername() + ", credentialId=" + result.getCredentialId().getBase64Url());  
+    logger.info("Updating signature count to " + result.getSignatureCount() + " for NETID=" + result.getUsername() + ", credentialId=" + result.getCredentialId().getBase64Url());  
   }
 
   @Override
@@ -566,10 +580,11 @@ public class RegistrationStorage implements CredentialRepository {
     }
         
     try {
-      conn = DatabaseConnectionFactory.getShibbolethDatabaseConnection();
+//      conn = DatabaseConnectionFactory.getShibbolethDatabaseConnection();
+      conn = DriverManager.getConnection ("jdbc:mysql://shib-db:3306/idp1_db", "db_user", "db_pw_11");
       
       String credentialIdBase64 = credentialId.getBase64Url();
-      String sql = "select netid, user_handle, credential_type, credential_id, public_key_cose, signature_count, attestation_type, registration_time, nickname from webauthn_registrations_v where credential_id = ?";
+      String sql = "select NETID, WEBAUTHN_USERS.USER_HANDLE, CREDENTIAL_TYPE, CREDENTIAL_ID, PUBLIC_KEY_COSE, SIGNATURE_COUNT, ATTESTATION_TYPE, REGISTRATION_TIME, NICKNAME from WEBAUTHN_REGISTRATIONS RIGHT JOIN WEBAUTHN_USERS ON WEBAUTHN_USERS.USER_HANDLE = WEBAUTHN_REGISTRATIONS.USER_HANDLE where CREDENTIAL_ID = ?";
       ps = conn.prepareStatement(sql);
       ps.setString(1, credentialIdBase64);
       rs = ps.executeQuery();
@@ -615,14 +630,14 @@ public class RegistrationStorage implements CredentialRepository {
   }
   
   /**
-   * @param netid
+   * @param NETID
    * @return boolean
    */
-  public boolean hasRegistered(String netid) {
-    if (StringUtils.isEmpty(netid)) {
+  public boolean hasRegistered(String NETID) {
+    if (StringUtils.isEmpty(NETID)) {
       return false;
     }
     
-    return registeredUsers.contains(netid);
+    return registeredUsers.contains(NETID);
   }
 }
